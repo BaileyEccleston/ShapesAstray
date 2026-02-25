@@ -15,7 +15,7 @@ public class Grid : MonoBehaviour
     public TileType[,] levelGrid;
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    // Start is called once before the first execution of bnmbnmUpdate after the MonoBehaviour is created
     void Start()
     {
         levelGrid = new TileType[gridWidth, gridHeight];
