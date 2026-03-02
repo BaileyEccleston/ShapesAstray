@@ -8,6 +8,8 @@ public class GridScript : MonoBehaviour
 
     public GameObject leftDoor;
     public GameObject upDoor;
+    public GameObject potato;
+    public GameObject rottenPotato;
     Transform parent;
 
 
@@ -71,6 +73,16 @@ public class GridScript : MonoBehaviour
                         case 'U':
                             pos = GridToWorld(x, y);
                             Instantiate(upDoor, pos, Quaternion.Euler(0, 0, -90), parent);
+                            break;
+                        case 'p':
+                            pos = GridToWorld(x, y);
+                            levelGrid[x, y] = TileType.potato;
+                            Instantiate(potato, pos, Quaternion.identity, parent);
+                            break;
+                        case 'R':
+                            pos = GridToWorld(x, y);
+                            levelGrid[x, y] = TileType.rottenPotato;
+                            Instantiate(rottenPotato, pos, Quaternion.identity, parent);
                             break;
                     }
                 }

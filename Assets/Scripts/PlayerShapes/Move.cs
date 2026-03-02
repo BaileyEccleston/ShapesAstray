@@ -59,7 +59,7 @@ public class Move : MonoBehaviour
             FollowPath();
         }
 
-        if (currentState == State.MoveToPotato && path.Count == 0)
+        if (currentState == State.MoveToPotato && path.Count == 0 && currentPotato != null)
         {
             currentState = State.EatPotato;
             potato = currentPotato.GetComponent<Potato>();
@@ -229,6 +229,7 @@ public class Move : MonoBehaviour
     public void Die()
     {
         playerShapeManager.SetCurrentCount(-1);
+        playerShapeManager.Dead();
         isDead = true;
         Destroy(gameObject);
     }

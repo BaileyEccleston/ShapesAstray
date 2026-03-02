@@ -10,15 +10,24 @@ public class PlayerShapeManager : MonoBehaviour
 
     int currentCount;
 
+    int deadCount;
+
     public GameObject playerShape;
 
     public GridScript grid;
+
 
     TMP_Text startingShapeCount;
     TMP_Text safeShapesCount;
     TMP_Text goalShapeCount;
     TMP_Text currentShapeCount;
     Transform parent;
+
+    public LevelManager levelManager;
+
+    bool levelComplete = false;
+    bool levelFailed = false;
+
 
 
 
@@ -38,11 +47,12 @@ public class PlayerShapeManager : MonoBehaviour
         safeShapesCount = GameObject.Find("SafeShapes").GetComponent<TMP_Text>();
         goalShapeCount = GameObject.Find("TargetShapes").GetComponent<TMP_Text>();
         currentShapeCount = GameObject.Find("CurrentShapes").GetComponent<TMP_Text>();
+        levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
         currentCount = spawnCount;
         startingShapeCount.text = "Starting Shapes - " + spawnCount;
         goalShapeCount.text = "Target Safe Shapes - " + spawnCount * 0.6f;
         shapesSafe = 0;
-        goalCount = spawnCount;
+       // goalCount = spawnCount;
         for (int x = 0; x < grid.gridWidth; x++)
         {
             for (int y = 0; y < grid.gridHeight; y++)
@@ -62,6 +72,18 @@ public class PlayerShapeManager : MonoBehaviour
     {
         safeShapesCount.text = "Safe Shapes - " + shapesSafe;
         currentShapeCount.text = "Current Shapes - " + currentCount;
+
+        if (shapesSafe >= goalCount && !levelComplete)
+        {
+            levelComplete = true;
+            levelManager.LevelComplete();
+        }
+
+        if (deadCount >= ((spawnCount - goalCount) + 1) && !levelFailed)
+        {
+            levelFailed = true;
+            levelManager.levelFailed();
+        }
     }
 
     void SpawnShapes(Vector2 spawnPos)
@@ -81,5 +103,10 @@ public class PlayerShapeManager : MonoBehaviour
     public void SetCurrentCount(int count)
     {
         currentCount += count;
+    }
+
+    public void Dead()
+    {
+        deadCount++;
     }
 }

@@ -5,10 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - Furniture
-  - Wall
-  - Light
-  - Enemy
   - RottenPotato
+  - Enemy
+  - Light
+  - Wall
   - Potato
   layers:
   - Default
@@ -20,7 +20,7 @@ TagManager:
   - Enemy
   - Light
   - Door
-  - LightSwitch
+  - Lightswitch
   - 
   - 
   - 

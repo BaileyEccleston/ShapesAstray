@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: 3dbe19a8889754e4a955639fe8eb720a
+  productGUID: 74d2793101173ae4b943dcbf7ea8f8af
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: ShapesAstray
+  productName: Shapes Astray
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -785,14 +785,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: ShapesAstray
+  metroPackageName: Shapes Astray
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: ShapesAstray
+  metroApplicationDescription: Shapes Astray
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -863,10 +863,10 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 221d5c78-c08d-4309-b7bf-ddb47a851071
+  cloudProjectId: 6b5e22b4-ded2-4ac7-ae03-65ee4f70a839
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: ShapesAstray 2026-02-23_09-54-07
+  projectName: Shapes Astray 2026-03-02_09-46-31
   organizationId: be1crt
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

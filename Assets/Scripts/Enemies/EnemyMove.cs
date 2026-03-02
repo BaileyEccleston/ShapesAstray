@@ -1,8 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
-using Unity.VisualScripting;
-using System.Net;
 
 public class EnemyMove : MonoBehaviour
 {
@@ -10,117 +8,129 @@ public class EnemyMove : MonoBehaviour
     {
         Stationary,
         Patrol,
-        Pick,
-        Shake,
-        Attack,
-        Idle,
-        None,
+        Waiting,
+        Attack
     }
-
-
-
-    private bool inDarkRoom = false;
-
-    [SerializeField] private SpriteRenderer spriteRenderer;
 
     public BFSMovement bfs;
     GridScript grid;
-    float moveSpeed;
-    public float attackSpeed;
-    public float patrolSpeed;
 
+    public float moveSpeed = 5f;
+    public int detectionRange = 4; // Manhattan grid distance
 
-    public Vector2Int targetCell;
+    private State currentState;
 
     private List<Vector2Int> path = new List<Vector2Int>();
+    private Vector2Int lastTargetCell;
 
-    State currentState;
-    [SerializeField]
-    GameObject targetPlayer;
+    private Move targetMove;
+    private GameObject targetPlayer;
 
-    Move move;
-
+    private int lightOverlapCount = 0;
 
     private void Awake()
     {
         grid = FindAnyObjectByType<GridScript>();
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    private void Start()
     {
-        moveSpeed = patrolSpeed;
-        currentState = State.Stationary;
+        currentState = State.Patrol;
+        PickRandomPatrolTarget();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        /*
-        if (targetPlayer == null)
-        {
-            targetPlayer = null;
-            currentState = State.Patrol;
-        } */
+        if (currentState == State.Stationary)
+            return;
 
-        if (currentState == State.Attack)
-        {
-            moveSpeed = attackSpeed;
-            targetCell = grid.WorldToGrid(targetPlayer.transform.position);
-            Vector2Int currentCell = grid.WorldToGrid(transform.position);
-
-            path = bfs.FindPath(currentCell, targetCell);
-
-            if (Vector2.Distance(transform.position, targetPlayer.transform.position) < 1f)
-            {
-                move.Die();
-                targetPlayer = null;
-                currentState = State.Patrol;
-
-            }
-            // Debug.Log(path[0]);
-            if (path != null && path.Count > 0)
-            {
-                Vector2 nextWorldPos = grid.GridToWorld(path[0]);
-                transform.position = Vector2.MoveTowards(transform.position, nextWorldPos, Time.deltaTime * moveSpeed);
-            }
-            else
-            {
-                targetPlayer = null;
-                currentState = State.Patrol;
-            }
-
-
-        }
         if (currentState == State.Patrol)
         {
-            moveSpeed = patrolSpeed;
-            if (path == null || path.Count == 0)
-            {
-                PickRandomPatrolTarget();
-            }
-
-            if (path != null && path.Count > 0)
-            {
-                Vector2Int nextCell = path[0];
-                Vector2 nextWorldPos = grid.GridToWorld(nextCell);
-
-                transform.position = Vector2.MoveTowards(
-                    transform.position,
-                    nextWorldPos,
-                    moveSpeed * Time.deltaTime
-                );
-
-                if (Vector2.Distance(transform.position, nextWorldPos) < 0.01f)
-                {
-                    transform.position = nextWorldPos; 
-                    path.RemoveAt(0);
-                }
-            }
+            CheckForPlayerInRange();
+            FollowPath();
         }
-
-
+        else if (currentState == State.Attack)
+        {
+            HandleAttack();
+        }
     }
 
+    // ================= DETECTION =================
+
+    void CheckForPlayerInRange()
+    {
+        Move[] players = FindObjectsOfType<Move>();
+
+        Vector2Int enemyCell = grid.WorldToGrid(transform.position);
+
+        foreach (Move player in players)
+        {
+            Vector2Int playerCell = grid.WorldToGrid(player.transform.position);
+
+            int distance =
+                Mathf.Abs(enemyCell.x - playerCell.x) +
+                Mathf.Abs(enemyCell.y - playerCell.y);
+
+            if (distance <= detectionRange)
+            {
+                targetMove = player;
+                targetPlayer = player.gameObject;
+                currentState = State.Waiting;
+                StartCoroutine(BeginAttackAfterDelay());
+                return;
+            }
+        }
+    }
+
+    IEnumerator BeginAttackAfterDelay()
+    {
+        yield return new WaitForSeconds(5f);
+
+        if (targetPlayer == null || lightOverlapCount > 0)
+        {
+            currentState = State.Patrol;
+            yield break;
+        }
+
+        currentState = State.Attack;
+    }
+
+    // ================= ATTACK =================
+
+    void HandleAttack()
+    {
+        if (targetPlayer == null)
+        {
+            ReturnToPatrol();
+            return;
+        }
+
+        Vector2Int currentCell = grid.WorldToGrid(transform.position);
+        Vector2Int targetCell = grid.WorldToGrid(targetPlayer.transform.position);
+
+        if (targetCell != lastTargetCell || path.Count == 0)
+        {
+            path = bfs.FindPath(currentCell, targetCell);
+            lastTargetCell = targetCell;
+        }
+
+        if (path.Count == 0)
+            return;
+
+        MoveAlongPath();
+
+        currentCell = grid.WorldToGrid(transform.position);
+
+        if (currentCell == targetCell)
+        {
+            if (targetMove != null)
+                targetMove.Die();
+
+            ReturnToPatrol();
+        }
+    }
+
+    // ================= PATROL =================
 
     void PickRandomPatrolTarget()
     {
@@ -137,7 +147,7 @@ public class EnemyMove : MonoBehaviour
 
             List<Vector2Int> newPath = bfs.FindPath(start, cell);
 
-            if (newPath != null && newPath.Count > 0)
+            if (newPath.Count > 0)
             {
                 path = newPath;
                 return;
@@ -147,43 +157,79 @@ public class EnemyMove : MonoBehaviour
         path.Clear();
     }
 
+    void FollowPath()
+    {
+        if (path == null || path.Count == 0)
+        {
+            PickRandomPatrolTarget();
+            return;
+        }
 
+        MoveAlongPath();
+    }
+
+    // ================= MOVEMENT =================
+
+    void MoveAlongPath()
+    {
+        Vector2Int nextCell = path[0];
+
+        if (!grid.IsWalkable(nextCell))
+        {
+            path.Clear();
+            return;
+        }
+
+        Vector2 nextWorldPos = grid.GridToWorld(nextCell);
+
+        transform.position = Vector2.MoveTowards(
+            transform.position,
+            nextWorldPos,
+            moveSpeed * Time.deltaTime
+        );
+
+        if (Vector2.Distance(transform.position, nextWorldPos) < 0.01f)
+        {
+            transform.position = nextWorldPos;
+            path.RemoveAt(0);
+        }
+    }
+
+    void ReturnToPatrol()
+    {
+        targetMove = null;
+        targetPlayer = null;
+        path.Clear();
+        currentState = lightOverlapCount > 0 ? State.Stationary : State.Patrol;
+
+        if (currentState == State.Patrol)
+            PickRandomPatrolTarget();
+    }
+
+    // ================= LIGHT =================
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
-        if (collision.gameObject.tag == "Light")
+        if (collision.CompareTag("Light"))
         {
-            targetPlayer = null;
-    
+            lightOverlapCount++;
             currentState = State.Stationary;
+            path.Clear();
         }
-        if (currentState == State.Patrol)
-        {
-            if (collision.gameObject.tag == "Player")
-            {
-                Debug.Log("Player shape detected");
-                targetPlayer = collision.gameObject;
-                currentState = State.Shake;
-                StartCoroutine(Shake());
-                move = targetPlayer.GetComponent<Move>();
-            }
-        }
-
     }
-
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Light")
+        if (collision.CompareTag("Light"))
         {
-            currentState = State.Patrol;
-        }
-    }
+            lightOverlapCount--;
 
-    IEnumerator Shake()
-    {
-        yield return new WaitForSeconds(5);
-        currentState = State.Attack;
+            if (lightOverlapCount <= 0)
+            {
+                lightOverlapCount = 0;
+                currentState = State.Patrol;
+                PickRandomPatrolTarget();
+            }
+        }
     }
 }
