@@ -85,7 +85,9 @@ public class GridObject : MonoBehaviour
                 {
                     return false;
                 }
-                if (grid.levelGrid[checkX, checkY] != TileType.floor)
+                
+                //Make sure to add the other tiles here cant be bothered doing it now
+                if (grid.levelGrid[checkX, checkY] != TileType.floor && grid.levelGrid[checkX, checkY] != TileType.potato)
                 {
                     return false;
                 }
@@ -98,15 +100,25 @@ public class GridObject : MonoBehaviour
     public void PlaceInGrid()
     {
         Vector3 pos = transform.position;
-        pos += Vector3.one * 0.001f;
+       // pos += Vector3.one * 0.001f;
 
         cell = grid.WorldToGrid(pos);
 
         if (CanPlace(cell))
         {
+            Vector2 offset;
             Vector2 baseWorld = grid.GridToWorld(cell.x, cell.y);
-            Vector2 offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
-            // Vector2 offset = new Vector2((size.x - 1), (size.y - 1));
+            if (size.x >= 3)
+            {
+                offset = new Vector2(((size.x - 1) * 0.5f) - 1, (size.y - 1) * 0.5f);
+            }
+            else
+            {
+                offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
+            }
+                
+
+           // Vector2 offset = new Vector2(size.x / 0.5f, size.y / 0.5f);
             transform.position = baseWorld + offset;
             //transform.position = baseWorld;
 

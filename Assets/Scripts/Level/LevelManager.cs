@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,7 +13,7 @@ public class LevelManager : MonoBehaviour
 
     GameObject loadedLevel;
 
-  //  public GridScript gridManager;
+    //  public GridScript gridManager;
 
 
     [SerializeField] private GameObject fail;
@@ -22,7 +23,7 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         LoadLevel(currentLevel);
- 
+
     }
 
     // Update is called once per frame
@@ -45,7 +46,7 @@ public class LevelManager : MonoBehaviour
 
     public void LoadLevel(int levelNum)
     {
-        Vector2 pos = new Vector2 (0, 0);
+        Vector2 pos = new Vector2(0, 0);
         loadedLevel = Instantiate(set1Levels[currentLevel], pos, Quaternion.identity);
 
     }
@@ -103,11 +104,18 @@ public class LevelManager : MonoBehaviour
     public void NextLevel()
     {
         UnloadLevel();
-       // CompleteLevel();
-        //LoadLevel(currentLevel);
+        StartCoroutine(SwapLevelAfterDelay());
+
         if (success.activeInHierarchy)
         {
             success.SetActive(false);
         }
+    }
+
+    IEnumerator SwapLevelAfterDelay()
+    {
+        yield return new WaitForSeconds(2f);
+        CompleteLevel();
+        LoadLevel(currentLevel);
     }
 }

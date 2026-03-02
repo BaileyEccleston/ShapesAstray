@@ -117,10 +117,7 @@ public class Move : MonoBehaviour
         path.Clear();
     }
 
-    void TargetPotato(Vector2Int targetCell)
-    {
 
-    }
 
     void FollowPath()
     {
@@ -183,6 +180,7 @@ public class Move : MonoBehaviour
         {
             moveSpeed = 0.5f;
         }
+        /*
         if (collision.gameObject.tag == "Potato" && collision.gameObject.GetComponent<GridObject>().isDragging == false)
         {
             currentPotato = collision.gameObject;
@@ -194,8 +192,24 @@ public class Move : MonoBehaviour
 
             targetCell = potatoCell;
             path = bfs.FindPath(currentCell, targetCell);
-        }
+        }*/
 
+    }
+
+    public void TargetPotato(GameObject potato)
+    {
+        if (potato.tag == "Potato" && potato.gameObject.GetComponent<GridObject>().isDragging == false)
+        {
+            currentPotato = potato.gameObject;
+            Debug.Log("Entered potato");
+            currentState = State.MoveToPotato;
+
+            Vector2Int potatoCell = grid.WorldToGrid(potato.transform.position);
+            Vector2Int currentCell = grid.WorldToGrid(transform.position);
+
+            targetCell = potatoCell;
+            path = bfs.FindPath(currentCell, targetCell);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
