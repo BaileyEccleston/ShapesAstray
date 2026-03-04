@@ -93,8 +93,9 @@ public class LevelManager : MonoBehaviour
 
     public void RetryLevel()
     {
+        Debug.Log("Retry Level");
         UnloadLevel();
-        LoadLevel(currentLevel);
+        StartCoroutine(RetryLevelAfterDelay());
         if (fail.activeInHierarchy)
         {
             fail.SetActive(false);
@@ -114,8 +115,14 @@ public class LevelManager : MonoBehaviour
 
     IEnumerator SwapLevelAfterDelay()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         CompleteLevel();
+        LoadLevel(currentLevel);
+    }
+
+    IEnumerator RetryLevelAfterDelay()
+    {
+        yield return new WaitForSeconds(1f);
         LoadLevel(currentLevel);
     }
 }

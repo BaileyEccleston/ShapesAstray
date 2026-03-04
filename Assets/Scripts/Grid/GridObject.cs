@@ -87,7 +87,7 @@ public class GridObject : MonoBehaviour
                 }
                 
                 //Make sure to add the other tiles here cant be bothered doing it now
-                if (grid.levelGrid[checkX, checkY] != TileType.floor && grid.levelGrid[checkX, checkY] != TileType.potato)
+                if (grid.levelGrid[checkX, checkY] != TileType.floor && grid.levelGrid[checkX, checkY] != TileType.potato && grid.levelGrid[checkX, checkY] != TileType.rottenPotato)
                 {
                     return false;
                 }
@@ -107,6 +107,7 @@ public class GridObject : MonoBehaviour
         if (CanPlace(cell))
         {
             Vector2 offset;
+
             Vector2 baseWorld = grid.GridToWorld(cell.x, cell.y);
             if (size.x >= 3)
             {
@@ -121,8 +122,13 @@ public class GridObject : MonoBehaviour
            // Vector2 offset = new Vector2(size.x / 0.5f, size.y / 0.5f);
             transform.position = baseWorld + offset;
             //transform.position = baseWorld;
-
-            currentPosition = cell;
+            // currentPosition = cell;
+            Vector2Int adjustCell = cell;
+            if (size.x >= 3)
+            {
+                adjustCell.x -= 1;
+            }
+            currentPosition = adjustCell;
             startPosition = transform.position;
 
             SetGridSlots(currentPosition);
@@ -144,13 +150,21 @@ public class GridObject : MonoBehaviour
                 int gridY = origin.y + y;
 
                 if (gameObject.tag == "Furniture")
+                {
                     grid.levelGrid[gridX, gridY] = TileType.furniture;
+                }
 
                 if (gameObject.tag == "Potato")
+                {
                     grid.levelGrid[gridX, gridY] = TileType.potato;
+                }
 
                 if (gameObject.tag == "RottenPotato")
+                {
                     grid.levelGrid[gridX, gridY] = TileType.rottenPotato;
+                    Vector2Int slot = new Vector2Int(gridX, gridY);
+                    SetRottenPotatoScent(slot);
+                }
             }
         }
     }
@@ -173,43 +187,33 @@ public class GridObject : MonoBehaviour
         }
     }
 
-    public void SetRottenPotatoScent(Vector2Int potato)
+    public void SetRottenPotatoScent(Vector2Int potatoSlot)
     {
-        int width = grid.gridWidth;
-        int height = grid.gridHeight;
+        int minX = Mathf.Max(0, potatoSlot.x - 3);
+        int maxX = Mathf.Min(grid.gridWidth - 1, potatoSlot.x + 3);
 
-        void TrySet(int x, int y)
+        int minY = Mathf.Max(0, potatoSlot.y - 3);
+        int maxY = Mathf.Min(grid.gridHeight - 1, potatoSlot.y + 3);
+
+        for (int x = minX; x <= maxX; x++)
         {
-            if (x < 0 || x >= width || y < 0 || y >= height)
-                return;
-
-            if (grid.levelGrid[x, y] == TileType.floor)
+            for (int y = minY; y <= maxY; y++)
             {
-                grid.levelGrid[x, y] = TileType.rottenPotatoScent;
+                Debug.Log("SetScent");
+                if (grid.levelGrid[x, y] == TileType.floor)
+                {
+                    grid.levelGrid[x, y] = TileType.rottenPotatoScent;
+                }
             }
         }
-
-        for (int dx = -1; dx <= 1; dx++)
-        {
-            for (int dy = -1; dy <= 1; dy++)
-            {
-                if (dx == 0 && dy == 0)
-                    continue; 
-
-                TrySet(potato.x + dx, potato.y + dy);
-            }
-        }
-
-    
-        TrySet(potato.x + 2, potato.y);
-        TrySet(potato.x - 2, potato.y);
-        TrySet(potato.x, potato.y + 2);
-        TrySet(potato.x, potato.y - 2);
     }
+
 
 
     public void RemoveRottenPotatoScent(Vector2 potato)
     {
 
     }
+
+
 }

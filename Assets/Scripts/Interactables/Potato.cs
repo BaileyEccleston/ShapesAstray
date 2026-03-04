@@ -29,15 +29,13 @@ public class Potato : MonoBehaviour
     {
         Move[] players = FindObjectsOfType<Move>();
 
-        Vector2Int enemyCell = grid.WorldToGrid(transform.position);
+        Vector2Int potatoCell = grid.WorldToGrid(transform.position);
 
         foreach (Move player in players)
         {
             Vector2Int playerCell = grid.WorldToGrid(player.transform.position);
 
-            int distance =
-                Mathf.Abs(enemyCell.x - playerCell.x) +
-                Mathf.Abs(enemyCell.y - playerCell.y);
+            float distance = Vector2.Distance(potatoCell, playerCell);
 
             if (distance <= detectionRange)
             {

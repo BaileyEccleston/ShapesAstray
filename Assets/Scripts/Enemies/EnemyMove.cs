@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyMove : MonoBehaviour
@@ -55,11 +56,11 @@ public class EnemyMove : MonoBehaviour
         }
     }
 
-    // ================= DETECTION =================
+ 
 
     void CheckForPlayerInRange()
     {
-        Move[] players = FindObjectsOfType<Move>();
+        Move[] players = FindObjectsByType<Move>(FindObjectsSortMode.InstanceID);
 
         Vector2Int enemyCell = grid.WorldToGrid(transform.position);
 
@@ -67,10 +68,12 @@ public class EnemyMove : MonoBehaviour
         {
             Vector2Int playerCell = grid.WorldToGrid(player.transform.position);
 
-            int distance =
-                Mathf.Abs(enemyCell.x - playerCell.x) +
-                Mathf.Abs(enemyCell.y - playerCell.y);
+           // int distance = Mathf.Abs(enemyCell.x - playerCell.x) + Mathf.Abs(enemyCell.y - playerCell.y);
+           float distance = Vector2.Distance(enemyCell, playerCell);
 
+
+
+            // I can alter detection to check specific x and y sizes
             if (distance <= detectionRange)
             {
                 targetMove = player;
