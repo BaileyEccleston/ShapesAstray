@@ -47,7 +47,9 @@ public class LevelManager : MonoBehaviour
     public void LoadLevel(int levelNum)
     {
         Vector2 pos = new Vector2(0, 0);
+        Debug.Log(currentLevel);
         loadedLevel = Instantiate(set1Levels[currentLevel], pos, Quaternion.identity);
+        Debug.Log(currentLevel);
 
     }
 
