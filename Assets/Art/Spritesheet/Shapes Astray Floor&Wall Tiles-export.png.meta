@@ -55,7 +55,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -187,7 +187,7 @@ TextureImporter:
       name: Floor4
       rect:
         serializedVersion: 2
-        x: 95
+        x: 96
         y: 576
         width: 32
         height: 32
@@ -209,7 +209,7 @@ TextureImporter:
       name: Floor5
       rect:
         serializedVersion: 2
-        x: 126
+        x: 128
         y: 576
         width: 32
         height: 32
@@ -672,7 +672,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 32
-        y: 257
+        y: 256
         width: 32
         height: 32
       alignment: 0

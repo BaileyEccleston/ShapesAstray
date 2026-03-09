@@ -14,4 +14,6 @@ public enum TileType
     startPos,
     goal,
     enemySpawn,
+    water,
+    fire,
 }

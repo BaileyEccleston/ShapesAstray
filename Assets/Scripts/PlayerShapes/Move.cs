@@ -180,19 +180,11 @@ public class Move : MonoBehaviour
         {
             moveSpeed = 0.5f;
         }
-        /*
-        if (collision.gameObject.tag == "Potato" && collision.gameObject.GetComponent<GridObject>().isDragging == false)
+        if (collision.gameObject.tag == "Water")
         {
-            currentPotato = collision.gameObject;
-            Debug.Log("Entered potato");
-            currentState = State.MoveToPotato;
-
-            Vector2Int potatoCell = grid.WorldToGrid(collision.transform.position);
-            Vector2Int currentCell = grid.WorldToGrid(transform.position);
-
-            targetCell = potatoCell;
-            path = bfs.FindPath(currentCell, targetCell);
-        }*/
+            Debug.Log("Entered Water");
+            Die();
+        }
 
     }
 

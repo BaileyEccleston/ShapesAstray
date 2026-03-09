@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class PlayerShapeManager : MonoBehaviour
@@ -20,7 +21,7 @@ public class PlayerShapeManager : MonoBehaviour
     TMP_Text startingShapeCount;
     TMP_Text safeShapesCount;
     TMP_Text goalShapeCount;
-    TMP_Text currentShapeCount;
+ 
     Transform parent;
 
     public LevelManager levelManager;
@@ -28,7 +29,9 @@ public class PlayerShapeManager : MonoBehaviour
     bool levelComplete = false;
     bool levelFailed = false;
 
-
+    Image playerBar;
+    Image safeBar;
+   
 
 
     public void GetGrid()
@@ -41,12 +44,17 @@ public class PlayerShapeManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        safeBar = GameObject.Find("SafeShapeBar").GetComponent<Image>();
+        playerBar = GameObject.Find("CurrentShapeBar").GetComponent<Image>();
+
+        safeBar.fillAmount = 0;
+        playerBar.fillAmount = 1;
         parent = transform.parent;
         grid = GameObject.Find("GridManager").GetComponent<GridScript>();
         startingShapeCount = GameObject.Find("StartingShapeCount").GetComponent<TMP_Text>();
         safeShapesCount = GameObject.Find("SafeShapes").GetComponent<TMP_Text>();
         goalShapeCount = GameObject.Find("TargetShapes").GetComponent<TMP_Text>();
-        currentShapeCount = GameObject.Find("CurrentShapes").GetComponent<TMP_Text>();
+
         levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
         currentCount = spawnCount;
         startingShapeCount.text = "Starting Shapes - " + spawnCount;
@@ -71,7 +79,7 @@ public class PlayerShapeManager : MonoBehaviour
     void Update()
     {
         safeShapesCount.text = "Safe Shapes - " + shapesSafe;
-        currentShapeCount.text = "Current Shapes - " + currentCount;
+
 
         if (shapesSafe >= goalCount && !levelComplete)
         {
@@ -96,8 +104,14 @@ public class PlayerShapeManager : MonoBehaviour
 
     public void Safe()
     {
-        shapesSafe++;
         SetCurrentCount(-1);
+        float percent = currentCount / (float)spawnCount;
+        playerBar.fillAmount = Mathf.Lerp(playerBar.fillAmount,  percent, 10f * Time.deltaTime);
+
+        float safePercent = shapesSafe / goalCount;
+        safeBar.fillAmount = Mathf.Lerp(safeBar.fillAmount, safePercent, 10f * Time.deltaTime);
+        shapesSafe++;
+
     }
 
     public void SetCurrentCount(int count)
@@ -107,6 +121,9 @@ public class PlayerShapeManager : MonoBehaviour
 
     public void Dead()
     {
+        SetCurrentCount(-1);
+        float percent = currentCount / (float)spawnCount;
+        playerBar.fillAmount = Mathf.Lerp(playerBar.fillAmount, percent, 10f * Time.deltaTime);
         deadCount++;
     }
 }

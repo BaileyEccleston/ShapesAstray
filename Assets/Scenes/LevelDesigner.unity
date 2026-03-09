@@ -338,7 +338,8 @@ MonoBehaviour:
   currentLevel: 0
   set: 1
   levelsInSet: 20
-  gridManager: {fileID: 0}
+  fail: {fileID: 0}
+  success: {fileID: 0}
 --- !u!4 &730100543
 Transform:
   m_ObjectHideFlags: 0
