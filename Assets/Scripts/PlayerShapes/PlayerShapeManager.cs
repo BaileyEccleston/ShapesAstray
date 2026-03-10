@@ -104,14 +104,14 @@ public class PlayerShapeManager : MonoBehaviour
 
     public void Safe()
     {
-        SetCurrentCount(-1);
-        float percent = currentCount / (float)spawnCount;
-        playerBar.fillAmount = Mathf.Lerp(playerBar.fillAmount,  percent, 10f * Time.deltaTime);
-
-        float safePercent = shapesSafe / goalCount;
-        safeBar.fillAmount = Mathf.Lerp(safeBar.fillAmount, safePercent, 10f * Time.deltaTime);
         shapesSafe++;
+        SetCurrentCount(-1);
 
+        float percent = currentCount / (float)spawnCount;
+        playerBar.fillAmount = percent;
+
+        float safePercent = shapesSafe / (float)goalCount;
+        safeBar.fillAmount = safePercent;
     }
 
     public void SetCurrentCount(int count)
@@ -122,8 +122,10 @@ public class PlayerShapeManager : MonoBehaviour
     public void Dead()
     {
         SetCurrentCount(-1);
+
         float percent = currentCount / (float)spawnCount;
-        playerBar.fillAmount = Mathf.Lerp(playerBar.fillAmount, percent, 10f * Time.deltaTime);
+        playerBar.fillAmount = percent;
+
         deadCount++;
     }
 }
