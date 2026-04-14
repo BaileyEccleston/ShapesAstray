@@ -2,6 +2,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+
+[System.Serializable]
+public class SpriteVariant
+{
+    public Sprite[] up;
+    public Sprite[] down;
+    public Sprite[] left;
+    public Sprite[] right;
+}
+
+
 public class Move : MonoBehaviour
 {
     enum State
@@ -11,6 +22,20 @@ public class Move : MonoBehaviour
         EatPotato,
         Idle,
         None,
+    }
+
+    public enum Shape
+    {
+        Circle,
+        Triangle,
+        Square,
+    }
+
+    public enum Colour
+    {
+        Blue,
+        Pink,
+        Orange
     }
 
     bool isDead = false;
@@ -23,14 +48,29 @@ public class Move : MonoBehaviour
 
     PlayerShapeManager playerShapeManager;
 
-    [SerializeField] private Sprite spriteUp;
-    [SerializeField] private Sprite spriteDown;
-    [SerializeField] private Sprite spriteLeft;
-    [SerializeField] private Sprite spriteRight;
+
+
+
+    // Stores all frames
+    [SerializeField] private SpriteVariant[] variants;
+    SpriteVariant currentVariant;
+
+
+    [SerializeField] float animationSpeed = 0.15f;
+
+    float animationTimer;
+    int frameIndex;
+    Sprite[] currentFrames;
+
 
     public BFSMovement bfs;
     GridScript grid;
     public float moveSpeed;
+
+    int moveSpeedMultiplyer = 1;
+    public int maxMoveSpeedMultiplyer;
+
+    public float spedUpSpeed;
     public float defaultSpeed;
 
     public Vector2Int targetCell;
@@ -38,6 +78,12 @@ public class Move : MonoBehaviour
     private List<Vector2Int> path = new List<Vector2Int>();
 
     State currentState;
+
+    public bool targeted = false;
+
+    public GameObject splat;
+
+    Transform parent;
 
     private void Awake()
     {
@@ -47,8 +93,12 @@ public class Move : MonoBehaviour
 
     private void Start()
     {
+        parent = transform.parent;
+        int randomVariant = Random.Range(0, variants.Length);
+        currentVariant = variants[randomVariant];
         currentState = State.Move;
         PickTarget();
+    
 
     }
 
@@ -82,6 +132,11 @@ public class Move : MonoBehaviour
         if (grid.levelGrid[currentPos.x, currentPos.y] == TileType.rottenPotatoScent)
         {
             Die();
+        }
+
+        if (targeted)
+        {
+            spriteRenderer.color = Color.red;
         }
     }
 
@@ -178,11 +233,29 @@ public class Move : MonoBehaviour
     {
         if (collision.gameObject.tag == "Light")
         {
-            moveSpeed = 0.5f;
+            if (spedUpSpeed > 1)
+            {
+                moveSpeed = spedUpSpeed / 4;
+            }
+            else
+            {
+                moveSpeed = defaultSpeed / 4;
+            }
+        }
+        if (collision.gameObject.tag == "Fire")
+        {
+            Die();
         }
         if (collision.gameObject.tag == "Water")
         {
-            Debug.Log("Entered Water");
+            Water water = collision.gameObject.GetComponent<Water>();
+            if (water.waterDepthIncreaseCurrentAmount >= water.waterDepthIncreaseFinalAmount)
+            {
+                Die();
+            }
+        }
+        if (collision.gameObject.tag == "Trap")
+        {
             Die();
         }
 
@@ -208,7 +281,14 @@ public class Move : MonoBehaviour
     {
         if (collision.gameObject.tag == "Light")
         {
-            moveSpeed = defaultSpeed;
+            if (spedUpSpeed > 1)
+            {
+                moveSpeed = spedUpSpeed;
+            }
+            else
+            {
+                moveSpeed = defaultSpeed;
+            }
         }
     }
 
@@ -216,27 +296,62 @@ public class Move : MonoBehaviour
     {
         if (direction == Vector2Int.up)
         {
-            spriteRenderer.sprite = spriteUp;
+            currentFrames = currentVariant.up;
         }
         else if (direction == Vector2Int.down)
         {
-            spriteRenderer.sprite = spriteDown;
+            currentFrames = currentVariant.down;
         }
         else if (direction == Vector2Int.left)
         {
-            spriteRenderer.sprite = spriteLeft;
+            currentFrames = currentVariant.left;
         }
         else if (direction == Vector2Int.right)
         {
-            spriteRenderer.sprite = spriteRight;
+            currentFrames = currentVariant.right;
+        }
+
+        Animate();
+    }
+
+    void Animate()
+    {
+        if (currentFrames == null || currentFrames.Length == 0) return;
+
+        animationTimer += Time.deltaTime;
+
+        if (animationTimer >= animationSpeed)
+        {
+            animationTimer = 0f;
+
+            frameIndex++;
+            if (frameIndex >= currentFrames.Length)
+            {
+                frameIndex = 0;
+            }
+
+            spriteRenderer.sprite = currentFrames[frameIndex];
         }
     }
 
     public void Die()
     {
-        playerShapeManager.SetCurrentCount(-1);
         playerShapeManager.Dead();
         isDead = true;
+        Instantiate(splat, transform.position, Quaternion.identity, parent);
         Destroy(gameObject);
+    }
+
+    public void ChangeSpeed()
+    {
+        moveSpeedMultiplyer++;
+        if (moveSpeedMultiplyer > maxMoveSpeedMultiplyer)
+        {
+            moveSpeedMultiplyer = 1;
+            moveSpeed = defaultSpeed;
+            spedUpSpeed = 1;
+        }
+        spedUpSpeed = defaultSpeed * moveSpeedMultiplyer;
+        moveSpeed = spedUpSpeed;
     }
 }

@@ -13,6 +13,12 @@ TagManager:
   - Sink
   - Water
   - Fire
+  - Door
+  - Fish
+  - Trap
+  - InvisibleSponge
+  - Mop
+  - Splat
   layers:
   - Default
   - TransparentFX
@@ -25,7 +31,7 @@ TagManager:
   - Door
   - Lightswitch
   - PotatoDetect
-  - 
+  - Furniture
   - 
   - 
   - 

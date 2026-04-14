@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class EnemyMove : MonoBehaviour
 {
@@ -10,14 +11,40 @@ public class EnemyMove : MonoBehaviour
         Stationary,
         Patrol,
         Waiting,
-        Attack
+        Attack,
+        MoveToFish,
+        EatFish,
     }
+    [SerializeField] GameObject currentFish;
+    Fish fish;
+
+
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    // Stores all frames
+    [SerializeField] private SpriteVariant[] variants;
+    SpriteVariant currentVariant;
+
+    [SerializeField] float animationSpeed = 0.15f;
+
+    float animationTimer;
+    int frameIndex;
+    Sprite[] currentFrames;
 
     public BFSMovement bfs;
     GridScript grid;
 
-    public float moveSpeed = 5f;
-    public int detectionRange = 4; // Manhattan grid distance
+    public float moveSpeed;
+    public float defaultSpeed;
+
+    int moveSpeedMultiplyer = 1;
+    public int maxMoveSpeedMultiplyer;
+
+
+    public int detectionRange;
+    public float waitTime;
+
+    public float defaultWaitTime;
 
     private State currentState;
 
@@ -29,6 +56,8 @@ public class EnemyMove : MonoBehaviour
 
     private int lightOverlapCount = 0;
 
+    public Vector2Int targetCell;
+
     private void Awake()
     {
         grid = FindAnyObjectByType<GridScript>();
@@ -37,6 +66,7 @@ public class EnemyMove : MonoBehaviour
     private void Start()
     {
         currentState = State.Patrol;
+        currentVariant = variants[1];
         PickRandomPatrolTarget();
     }
 
@@ -49,6 +79,37 @@ public class EnemyMove : MonoBehaviour
         {
             CheckForPlayerInRange();
             FollowPath();
+        }
+        if (currentState == State.MoveToFish && path.Count == 0 && currentFish != null)
+        {
+            if (currentState == null)
+            {
+                currentState = State.Patrol;
+                PickRandomPatrolTarget();
+            }
+            if (path.Count > 0)
+            {
+                MoveAlongPath();
+            }
+            else
+            {
+                currentState = State.EatFish;
+                fish = currentFish.GetComponent<Fish>();
+            }
+                currentState = State.EatFish;
+            fish = currentFish.GetComponent<Fish>();
+        }
+        if (currentState == State.EatFish)
+        {
+            if (currentFish != null)
+            {
+                fish.health -= 1;
+            }
+            else
+            {
+                currentState = State.Patrol;
+
+            }
         }
         else if (currentState == State.Attack)
         {
@@ -76,6 +137,7 @@ public class EnemyMove : MonoBehaviour
             // I can alter detection to check specific x and y sizes
             if (distance <= detectionRange)
             {
+                player.targeted = true;
                 targetMove = player;
                 targetPlayer = player.gameObject;
                 currentState = State.Waiting;
@@ -87,15 +149,16 @@ public class EnemyMove : MonoBehaviour
 
     IEnumerator BeginAttackAfterDelay()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(waitTime);
 
         if (targetPlayer == null || lightOverlapCount > 0)
         {
             currentState = State.Patrol;
             yield break;
         }
-
+        currentVariant = variants[0];
         currentState = State.Attack;
+
     }
 
     // ================= ATTACK =================
@@ -152,6 +215,7 @@ public class EnemyMove : MonoBehaviour
 
             if (newPath.Count > 0)
             {
+                targetCell = cell;
                 path = newPath;
                 return;
             }
@@ -183,6 +247,11 @@ public class EnemyMove : MonoBehaviour
             return;
         }
 
+        Vector2Int currentCell = grid.WorldToGrid(transform.position);
+        Vector2Int direction = nextCell - currentCell;
+
+        UpdateSprite(direction); 
+
         Vector2 nextWorldPos = grid.GridToWorld(nextCell);
 
         transform.position = Vector2.MoveTowards(
@@ -197,15 +266,16 @@ public class EnemyMove : MonoBehaviour
             path.RemoveAt(0);
         }
     }
-
     void ReturnToPatrol()
     {
+        currentVariant = variants[1];
         targetMove = null;
         targetPlayer = null;
         path.Clear();
         currentState = lightOverlapCount > 0 ? State.Stationary : State.Patrol;
 
         if (currentState == State.Patrol)
+
             PickRandomPatrolTarget();
     }
 
@@ -234,5 +304,75 @@ public class EnemyMove : MonoBehaviour
                 PickRandomPatrolTarget();
             }
         }
+    }
+
+    void UpdateSprite(Vector2Int direction)
+    {
+        if (direction == Vector2Int.up)
+        {
+            currentFrames = currentVariant.up;
+        }
+        else if (direction == Vector2Int.down)
+        {
+            currentFrames = currentVariant.down;
+        }
+        else if (direction == Vector2Int.left)
+        {
+            currentFrames = currentVariant.left;
+        }
+        else if (direction == Vector2Int.right)
+        {
+            currentFrames = currentVariant.right;
+        }
+
+        Animate();
+    }
+
+    void Animate()
+    {
+        if (currentFrames == null || currentFrames.Length == 0) return;
+
+        animationTimer += Time.deltaTime;
+
+        if (animationTimer >= animationSpeed)
+        {
+            animationTimer = 0f;
+
+            frameIndex++;
+            if (frameIndex >= currentFrames.Length)
+            {
+                frameIndex = 0;
+            }
+
+            spriteRenderer.sprite = currentFrames[frameIndex];
+        }
+    }
+
+    public void TargetFish(GameObject fish)
+    {
+        if (fish.tag == "Fish" && fish.gameObject.GetComponent<GridObject>().isDragging == false)
+        {
+            currentFish = fish.gameObject;
+            currentState = State.MoveToFish;
+
+            Vector2Int fishCell = grid.WorldToGrid(fish.transform.position);
+            Vector2Int currentCell = grid.WorldToGrid(transform.position);
+
+            targetCell = fishCell;
+            path = bfs.FindPath(currentCell, targetCell);
+        }
+    }
+
+    public void ChangeSpeed()
+    {
+        moveSpeedMultiplyer++;
+        if (moveSpeedMultiplyer > maxMoveSpeedMultiplyer)
+        {
+            moveSpeedMultiplyer = 1;
+            moveSpeed = defaultSpeed;
+            waitTime = defaultWaitTime;
+        }
+        moveSpeed = defaultSpeed * moveSpeedMultiplyer;
+        waitTime = defaultWaitTime / moveSpeedMultiplyer;
     }
 }

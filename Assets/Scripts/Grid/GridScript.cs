@@ -57,11 +57,17 @@ public class GridScript : MonoBehaviour
                         case 'W':
                             levelGrid[x, y] = TileType.wall;
                             break;
+                        case 'B':
+                            levelGrid[x,y] = TileType.bottomWall;
+                            break;
                         case 'F':
                             levelGrid[x, y] = TileType.floor;
                             break;
                         case 'P':
                             levelGrid[x, y] = TileType.startPos;
+                            break;
+                        case 'O':
+                            levelGrid[x, y] = TileType.grandmaStartPos;
                             break;
                         case 'G':
                             levelGrid[x, y] = TileType.goal;
@@ -132,7 +138,7 @@ public class GridScript : MonoBehaviour
         {
             return false; 
         }
-        return levelGrid[cell.x, cell.y] == TileType.floor || levelGrid[cell.x, cell.y] == TileType.openDoor || levelGrid[cell.x, cell.y] == TileType.potato || levelGrid[cell.x, cell.y] == TileType.startPos || levelGrid[cell.x, cell.y] == TileType.enemySpawn || levelGrid[cell.x, cell.y] == TileType.goal;
+        return levelGrid[cell.x, cell.y] == TileType.floor || levelGrid[cell.x, cell.y] == TileType.openDoor || levelGrid[cell.x, cell.y] == TileType.potato || levelGrid[cell.x, cell.y] == TileType.startPos || levelGrid[cell.x, cell.y] == TileType.enemySpawn || levelGrid[cell.x, cell.y] == TileType.goal || levelGrid[cell.x, cell.y] == TileType.enemySpawn || levelGrid[cell.x, cell.y] == TileType.water || levelGrid[cell.x, cell.y] == TileType.grandmaStartPos;
     }
 
     public bool IsEndGoal(Vector2Int cell)

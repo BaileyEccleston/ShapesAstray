@@ -4,6 +4,7 @@ public enum TileType
 {
     none,
     wall,
+    bottomWall,
     floor,
     openDoor,
     closedDoor,
@@ -16,4 +17,7 @@ public enum TileType
     enemySpawn,
     water,
     fire,
+    fish,
+    grandmaStartPos,
+    cutlery,
 }

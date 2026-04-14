@@ -1,9 +1,11 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     bool paused = false;
     public GameObject pauseElements;
+    public LevelManager levelManager;
+    public LevelUIManager levelUIManager;
 
     // Update is called once per frame
     void Update()
@@ -43,5 +45,22 @@ public class PauseMenu : MonoBehaviour
         }
         paused = false;
         Time.timeScale = 1.0f;
+    }
+
+    public void LevelSelect()
+    {
+        if (pauseElements.activeInHierarchy)
+        {
+            pauseElements.SetActive(false);
+        }
+        levelManager.UnloadLevel();
+        levelUIManager.ToggleLevelSelect(true);
+        levelUIManager.ToggleLevelUI(false);
+    }
+
+    public void ResetProgress()
+    {
+        PlayerPrefs.DeleteAll();
+        SceneManager.LoadScene(0);
     }
 }

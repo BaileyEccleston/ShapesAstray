@@ -28,9 +28,12 @@ public class PlayerShapeManager : MonoBehaviour
 
     bool levelComplete = false;
     bool levelFailed = false;
+    bool grandmaSpawned = false;
 
     Image playerBar;
     Image safeBar;
+
+    public GrandmaSpawnManager grandmaSpawnManager;
    
 
 
@@ -51,14 +54,10 @@ public class PlayerShapeManager : MonoBehaviour
         playerBar.fillAmount = 1;
         parent = transform.parent;
         grid = GameObject.Find("GridManager").GetComponent<GridScript>();
-        startingShapeCount = GameObject.Find("StartingShapeCount").GetComponent<TMP_Text>();
-        safeShapesCount = GameObject.Find("SafeShapes").GetComponent<TMP_Text>();
-        goalShapeCount = GameObject.Find("TargetShapes").GetComponent<TMP_Text>();
+
 
         levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
         currentCount = spawnCount;
-        startingShapeCount.text = "Starting Shapes - " + spawnCount;
-        goalShapeCount.text = "Target Safe Shapes - " + spawnCount * 0.6f;
         shapesSafe = 0;
        // goalCount = spawnCount;
         for (int x = 0; x < grid.gridWidth; x++)
@@ -78,16 +77,19 @@ public class PlayerShapeManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        safeShapesCount.text = "Safe Shapes - " + shapesSafe;
-
-
         if (shapesSafe >= goalCount && !levelComplete)
         {
             levelComplete = true;
             levelManager.LevelComplete();
         }
 
-        if (deadCount >= ((spawnCount - goalCount) + 1) && !levelFailed)
+        if (deadCount >= ((spawnCount - goalCount) + 1) && !grandmaSpawned)
+        {
+            grandmaSpawnManager.SpawnGrandma();
+            grandmaSpawned = true;
+        }
+
+        if (currentCount <= 0 && !levelFailed)
         {
             levelFailed = true;
             levelManager.levelFailed();

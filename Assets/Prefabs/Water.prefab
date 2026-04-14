@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5590384044568732644}
   - component: {fileID: 4590333633911872270}
   - component: {fileID: -1909343644987997920}
+  - component: {fileID: -6102551981662227314}
   m_Layer: 0
   m_Name: Water
   m_TagString: Water
@@ -77,7 +78,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 8
+  m_SortingOrder: 2
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.049172327, g: 0.31454328, b: 0.8018868, a: 1}
   m_FlipX: 0
@@ -162,3 +163,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-6102551981662227314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9130327949202509277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 809ee5723d6984b43bc38eb929b00b40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waterDepthIncreaseTime: 3
+  waterDepthIncreaseFinalAmount: 5
+  waterDepthIncreaseCurrentAmount: 0
+  waterPrefab: {fileID: 9130327949202509277}

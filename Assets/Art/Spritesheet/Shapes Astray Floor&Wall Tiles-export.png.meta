@@ -114,6 +114,45 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -580,7 +619,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Wall7
+      name: BottomWall4
       rect:
         serializedVersion: 2
         x: 32
@@ -624,7 +663,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Wall8
+      name: BottomWall3
       rect:
         serializedVersion: 2
         x: 32
@@ -668,7 +707,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Wall9
+      name: BottomWall2
       rect:
         serializedVersion: 2
         x: 32
@@ -712,7 +751,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Wall10
+      name: BottomWall
       rect:
         serializedVersion: 2
         x: 32
@@ -1013,6 +1052,10 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
+      BottomWall: -1241148338
+      BottomWall2: 1039314394
+      BottomWall3: 1682658019
+      BottomWall4: 1658955522
       Floor: 8226012351931621270
       Floor10: 499256086
       Floor2: -2983120927752629492
@@ -1037,7 +1080,6 @@ TextureImporter:
       Shapes Astray Floor&Wall Tiles-export_34: -863325917
       Shapes Astray Floor&Wall Tiles-export_36: 2004004916
       Wall: -1587536839
-      Wall10: -1241148338
       Wall11: -68178050
       Wall12: 48057872
       Wall13: -477496708
@@ -1050,9 +1092,6 @@ TextureImporter:
       Wall4: 584652508
       Wall5: -1861778370
       Wall6: 436237091
-      Wall7: 1658955522
-      Wall8: 1682658019
-      Wall9: 1039314394
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
