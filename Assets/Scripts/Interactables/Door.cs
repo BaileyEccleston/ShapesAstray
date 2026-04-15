@@ -1,10 +1,11 @@
 using NUnit.Framework.Constraints;
+using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class Door : MonoBehaviour
 {
-
+    [SerializeField] protected Vector2Int size = Vector2Int.one;
     enum State
     {
         open,
@@ -47,11 +48,26 @@ public class Door : MonoBehaviour
 
         if (cell.x >= 0 && cell.x < grid.gridWidth && cell.y >= 0 && cell.y < grid.gridHeight)
         {
-            transform.position = grid.GridToWorld(cell.x, cell.y);
-            currentPosition = cell;
+            Vector2 offset;
+            Vector2 baseWorld = grid.GridToWorld(cell.x, cell.y);
+
+            if (size.x >= 3)
+                offset = new Vector2(((size.x - 1) * 0.5f) - 1, (size.y - 1) * 0.5f);
+            else
+                offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
+
+            transform.position = baseWorld + offset;
+            Vector3 sortLayer = new Vector3(transform.position.x, transform.position.y, transform.position.y);
+            transform.position = sortLayer;
+
+            Vector2Int adjustCell = cell;
+            if (size.x >= 3)
+                adjustCell.x -= 1;
+
+            currentPosition = adjustCell;
             startPosition = transform.position;
 
-            SetGridSlot(currentPosition);
+            SetGridSlot(currentPosition); 
         }
         else
         {

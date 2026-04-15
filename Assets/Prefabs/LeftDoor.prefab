@@ -77,13 +77,13 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
-  m_Sprite: {fileID: -7999980960525415818, guid: 468277188594c1644945e83413155b07, type: 3}
+  m_SortingOrder: 3
+  m_Sprite: {fileID: 9117532094778959935, guid: bcbcb033dbe7f014eaa81d1b125adc18, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.08, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -101,8 +101,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92aa22b1bdc52284fb4273e79b70110d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  closedDoor: {fileID: -7999980960525415818, guid: 468277188594c1644945e83413155b07, type: 3}
-  openDoor: {fileID: -8027759140508146737, guid: 7e2db50ec5a2cea4da665858772183e0, type: 3}
+  size: {x: 1, y: 1}
+  closedDoor: {fileID: 9117532094778959935, guid: bcbcb033dbe7f014eaa81d1b125adc18, type: 3}
+  openDoor: {fileID: 6940640950949826491, guid: f7c44d73c8c55214aa26ded0f236ca9e, type: 3}
 --- !u!61 &3115374256422246424
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -142,7 +143,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    newSize: {x: 0.08, y: 0.32}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0

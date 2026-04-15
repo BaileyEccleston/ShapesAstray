@@ -80,8 +80,11 @@ public class GridScript : MonoBehaviour
                             Instantiate(leftDoor, pos, Quaternion.identity, parent);
                             break;
                         case 'U':
-                            pos = GridToWorld(x, y);
-                            Instantiate(upDoor, pos, Quaternion.Euler(0, 0, -90), parent);
+                            pos = GridToWorld(x, y );
+                            Instantiate(upDoor, pos, Quaternion.Euler(0, 0, 0), parent);
+                            // GameObject Door = Instantiate(upDoor, pos, Quaternion.Euler(0, 0, 0), parent);
+                            //  Vector2 lower = new Vector2 (Door.transform.position.x, Door.transform.position.y - 1);
+                            // Door.transform.position = lower;
                             break;
                         case 'p':
                             pos = GridToWorld(x, y);
