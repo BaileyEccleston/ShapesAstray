@@ -11,7 +11,6 @@ public class Fire : MonoBehaviour
     Vector2Int gridPos;
     Vector2Int newPos;
 
-
     void Start()
     {
         grid = GameObject.Find("GridManager").GetComponent<GridScript>();

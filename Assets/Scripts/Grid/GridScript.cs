@@ -38,9 +38,7 @@ public class GridScript : MonoBehaviour
             {
                 levelGrid[x, y] = TileType.none;
 
-                Vector3Int tilePos = levelTileMap.WorldToCell(GridToWorld(x,y));
-               
-              //  Debug.Log(wallTileMap.GetSprite(tilePos));
+                Vector3Int tilePos = levelTileMap.WorldToCell(GridToWorld(x,y));         
 
                 Sprite sprite = levelTileMap.GetSprite(tilePos);
 
@@ -50,7 +48,6 @@ public class GridScript : MonoBehaviour
                     // This outputs all the names of the sprite in every tile
                     // This was used to see check if the name of a tilemap tile could be read
                     // This then let me reduce the amount of tilemaps to one
-                    //Debug.Log(sprite.name + sprite.name[0]);
                     switch(sprite.name[0])
                     {
 
@@ -82,9 +79,6 @@ public class GridScript : MonoBehaviour
                         case 'U':
                             pos = GridToWorld(x, y );
                             Instantiate(upDoor, pos, Quaternion.Euler(0, 0, 0), parent);
-                            // GameObject Door = Instantiate(upDoor, pos, Quaternion.Euler(0, 0, 0), parent);
-                            //  Vector2 lower = new Vector2 (Door.transform.position.x, Door.transform.position.y - 1);
-                            // Door.transform.position = lower;
                             break;
                         case 'p':
                             pos = GridToWorld(x, y);
@@ -102,17 +96,7 @@ public class GridScript : MonoBehaviour
             }
         }
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
 
-
-    private void Update()
-    {
-        
-    }
 
     public Vector2 GridToWorld(int gridX, int gridY)
     {

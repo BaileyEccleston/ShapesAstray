@@ -68,10 +68,13 @@ public class GridObject : MonoBehaviour
 
             Vector2 offset;
             if (size.x >= 3)
+            {
                 offset = new Vector2(((size.x - 1) * 0.5f) - 1, (size.y - 1) * 0.5f);
+            }
             else
+            {
                 offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
-
+            }
             transform.position = baseWorld + offset;
         }
 
@@ -111,7 +114,6 @@ public class GridObject : MonoBehaviour
                 if (size.y >= 2)
                 {
                     if (grid.levelGrid[checkX, checkY] != TileType.floor &&
-                       // grid.levelGrid[checkX, checkY] != TileType.bottomWall &&
                         grid.levelGrid[checkX, checkY] != TileType.potato &&
                         grid.levelGrid[checkX, checkY] != TileType.rottenPotato &&
                         grid.levelGrid[checkX, checkY] != TileType.water)
@@ -145,17 +147,23 @@ public class GridObject : MonoBehaviour
             Vector2 baseWorld = grid.GridToWorld(cell.x, cell.y);
 
             if (size.x >= 3)
+            {
                 offset = new Vector2(((size.x - 1) * 0.5f) - 1, (size.y - 1) * 0.5f);
+            }
             else
+            {
                 offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
-
+            }
+                
             transform.position = baseWorld + offset;
             Vector3 sortLayer = new Vector3(transform.position.x, transform.position.y, transform.position.y);
             transform.position = sortLayer;
 
             Vector2Int adjustCell = cell;
             if (size.x >= 3)
+            {
                 adjustCell.x -= 1;
+            }
 
             currentPosition = adjustCell;
             startPosition = transform.position;
@@ -181,16 +189,17 @@ public class GridObject : MonoBehaviour
                 int gridY = origin.y + y;
 
                 if (gameObject.tag == "Furniture")
+                {
                     grid.levelGrid[gridX, gridY] = TileType.furniture;
-
+                }
                 if (gameObject.tag == "Potato")
+                {
                     grid.levelGrid[gridX, gridY] = TileType.potato;
-
+                }                 
                 if (gameObject.tag == "RottenPotato")
+                {
                     grid.levelGrid[gridX, gridY] = TileType.rottenPotato;
-
-                if (gameObject.tag == "Fish")
-                    grid.levelGrid[gridX, gridY] = TileType.fish;
+                }    
             }
         }
     }
@@ -204,9 +213,10 @@ public class GridObject : MonoBehaviour
                 int gridX = origin.x + x;
                 int gridY = origin.y + y;
 
-                if (gridX >= 0 && gridX < grid.gridWidth &&
-                    gridY >= 0 && gridY < grid.gridHeight)
+                if (gridX >= 0 && gridX < grid.gridWidth && gridY >= 0 && gridY < grid.gridHeight)
+                {
                     grid.levelGrid[gridX, gridY] = TileType.floor;
+                }
             }
         }
     }

@@ -15,10 +15,6 @@ public class EnemyMove : MonoBehaviour
         MoveToFish,
         EatFish,
     }
-    [SerializeField] GameObject currentFish;
-    Fish fish;
-
-
     [SerializeField] private SpriteRenderer spriteRenderer;
 
     // Stores all frames
@@ -73,43 +69,13 @@ public class EnemyMove : MonoBehaviour
     private void Update()
     {
         if (currentState == State.Stationary)
+        {
             return;
-
-        if (currentState == State.Patrol)
+        }
+        else if (currentState == State.Patrol)
         {
             CheckForPlayerInRange();
             FollowPath();
-        }
-        if (currentState == State.MoveToFish && path.Count == 0 && currentFish != null)
-        {
-            if (currentState == null)
-            {
-                currentState = State.Patrol;
-                PickRandomPatrolTarget();
-            }
-            if (path.Count > 0)
-            {
-                MoveAlongPath();
-            }
-            else
-            {
-                currentState = State.EatFish;
-                fish = currentFish.GetComponent<Fish>();
-            }
-                currentState = State.EatFish;
-            fish = currentFish.GetComponent<Fish>();
-        }
-        if (currentState == State.EatFish)
-        {
-            if (currentFish != null)
-            {
-                fish.health -= 1;
-            }
-            else
-            {
-                currentState = State.Patrol;
-
-            }
         }
         else if (currentState == State.Attack)
         {
@@ -121,20 +87,18 @@ public class EnemyMove : MonoBehaviour
 
     void CheckForPlayerInRange()
     {
+        //Store all players move scripts in an array
         Move[] players = FindObjectsByType<Move>(FindObjectsSortMode.InstanceID);
 
         Vector2Int enemyCell = grid.WorldToGrid(transform.position);
 
+        // Search through players and target a player who is in range
         foreach (Move player in players)
         {
             Vector2Int playerCell = grid.WorldToGrid(player.transform.position);
 
-           // int distance = Mathf.Abs(enemyCell.x - playerCell.x) + Mathf.Abs(enemyCell.y - playerCell.y);
            float distance = Vector2.Distance(enemyCell, playerCell);
 
-
-
-            // I can alter detection to check specific x and y sizes
             if (distance <= detectionRange)
             {
                 player.targeted = true;
@@ -161,21 +125,23 @@ public class EnemyMove : MonoBehaviour
 
     }
 
-    // ================= ATTACK =================
 
     void HandleAttack()
     {
+        // if target player is lost return to patrolling
         if (targetPlayer == null)
         {
             ReturnToPatrol();
             return;
         }
 
+        //store current cell and the cell the player is located in
         Vector2Int currentCell = grid.WorldToGrid(transform.position);
         Vector2Int targetCell = grid.WorldToGrid(targetPlayer.transform.position);
 
         if (targetCell != lastTargetCell || path.Count == 0)
         {
+            // Calculate path 
             path = bfs.FindPath(currentCell, targetCell);
             lastTargetCell = targetCell;
         }
@@ -190,13 +156,13 @@ public class EnemyMove : MonoBehaviour
         if (currentCell == targetCell)
         {
             if (targetMove != null)
+            {
                 targetMove.Die();
+            }
 
             ReturnToPatrol();
         }
     }
-
-    // ================= PATROL =================
 
     void PickRandomPatrolTarget()
     {
@@ -209,7 +175,9 @@ public class EnemyMove : MonoBehaviour
             Vector2Int cell = new Vector2Int(x, y);
 
             if (!grid.IsWalkable(cell))
+            {
                 continue;
+            }
 
             List<Vector2Int> newPath = bfs.FindPath(start, cell);
 
@@ -234,9 +202,6 @@ public class EnemyMove : MonoBehaviour
 
         MoveAlongPath();
     }
-
-    // ================= MOVEMENT =================
-
     void MoveAlongPath()
     {
         Vector2Int nextCell = path[0];
@@ -254,11 +219,7 @@ public class EnemyMove : MonoBehaviour
 
         Vector2 nextWorldPos = grid.GridToWorld(nextCell);
 
-        transform.position = Vector2.MoveTowards(
-            transform.position,
-            nextWorldPos,
-            moveSpeed * Time.deltaTime
-        );
+        transform.position = Vector2.MoveTowards(transform.position, nextWorldPos, moveSpeed * Time.deltaTime);
 
         if (Vector2.Distance(transform.position, nextWorldPos) < 0.01f)
         {
@@ -275,11 +236,10 @@ public class EnemyMove : MonoBehaviour
         currentState = lightOverlapCount > 0 ? State.Stationary : State.Patrol;
 
         if (currentState == State.Patrol)
-
+        {
             PickRandomPatrolTarget();
+        }
     }
-
-    // ================= LIGHT =================
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -348,21 +308,8 @@ public class EnemyMove : MonoBehaviour
         }
     }
 
-    public void TargetFish(GameObject fish)
-    {
-        if (fish.tag == "Fish" && fish.gameObject.GetComponent<GridObject>().isDragging == false)
-        {
-            currentFish = fish.gameObject;
-            currentState = State.MoveToFish;
 
-            Vector2Int fishCell = grid.WorldToGrid(fish.transform.position);
-            Vector2Int currentCell = grid.WorldToGrid(transform.position);
-
-            targetCell = fishCell;
-            path = bfs.FindPath(currentCell, targetCell);
-        }
-    }
-
+    // Scale speed withtthe level speed up mechanic
     public void ChangeSpeed()
     {
         moveSpeedMultiplyer++;

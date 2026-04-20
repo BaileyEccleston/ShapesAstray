@@ -32,16 +32,19 @@ public class LeaveBehindObject : GridObject
                 int gridY = origin.y + y;
 
                 if (gameObject.tag == "Furniture")
+                {
                     grid.levelGrid[gridX, gridY] = TileType.furniture;
+                }
 
                 if (gameObject.tag == "Potato")
+                {
                     grid.levelGrid[gridX, gridY] = TileType.potato;
+                }
 
                 if (gameObject.tag == "RottenPotato")
+                {
                     grid.levelGrid[gridX, gridY] = TileType.rottenPotato;
-
-                if (gameObject.tag == "Fish")
-                    grid.levelGrid[gridX, gridY] = TileType.fish;
+                }
             }
         }
 

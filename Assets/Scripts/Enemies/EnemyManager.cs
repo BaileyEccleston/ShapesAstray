@@ -2,19 +2,17 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-
-
-
     public GameObject enemy;
 
     GridScript grid;
     Transform parent;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         parent = transform.parent;
         grid = GameObject.Find("GridManager").GetComponent<GridScript>();
+
+        //Search for enemy spawn tile in the grid
         for (int x = 0; x < grid.gridWidth; x++)
         {
             for (int y = 0; y < grid.gridHeight; y++)
@@ -27,12 +25,6 @@ public class EnemyManager : MonoBehaviour
                 }
             }
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     void SpawnEnemy(Vector2 spawnPos)

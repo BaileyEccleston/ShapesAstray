@@ -5,8 +5,6 @@ public class DrawGrid : MonoBehaviour
     public GridScript grid;
     private void OnDrawGizmos()
     {
-
-
         Gizmos.color = Color.gray;
 
         for (int x = 0; x < grid.gridWidth; x++)

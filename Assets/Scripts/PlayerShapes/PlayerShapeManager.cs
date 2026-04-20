@@ -59,7 +59,6 @@ public class PlayerShapeManager : MonoBehaviour
         levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
         currentCount = spawnCount;
         shapesSafe = 0;
-       // goalCount = spawnCount;
         for (int x = 0; x < grid.gridWidth; x++)
         {
             for (int y = 0; y < grid.gridHeight; y++)

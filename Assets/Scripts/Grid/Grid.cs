@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
-
-
     public int gridWidth = 30;
     public int gridHeight = 12;
 
@@ -32,8 +30,8 @@ public class Grid : MonoBehaviour
 
     public Vector2 GridToWorld(int gridX, int gridY)
     {
-        float worldX = gridOrigin.x + (gridX * cellSize);// + cellSize;// * 0.5f;
-        float worldY = gridOrigin.y + (gridY * cellSize);// + cellSize;// * 0.5f;
+        float worldX = gridOrigin.x + (gridX * cellSize);
+        float worldY = gridOrigin.y + (gridY * cellSize);
 
         return new Vector3(worldX, worldY, 0f);
     }

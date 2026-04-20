@@ -12,7 +12,6 @@ public class RottenPotato : MonoBehaviour
 
     public void Placed()
     {
-        Debug.Log("Placed");
         if (coroutine == null)
         {
             coroutine = StartCoroutine(RottenPotatoLife());
